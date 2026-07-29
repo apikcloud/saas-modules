@@ -56,7 +56,9 @@ class HealthController(Home):
 
         data = json.dumps(health_info)
         headers = [("Content-Type", "application/json"), ("Cache-Control", "no-store")]
-        return request.make_response(data, headers, status=status)
+        response = request.make_response(data, headers)
+        response.status_code = status
+        return response
 
     def _check_filestore(self):
         """
