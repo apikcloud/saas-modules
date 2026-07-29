@@ -6,7 +6,9 @@ from odoo.tools import config
 from odoo.addons.web.controllers.main import ensure_db, Home
 
 class ImpersonateController(Home):
-    @http.route("/impersonate", type="http", auth="none", csrf=False, methods=["GET", "POST"])
+    @http.route(
+        "/impersonate", type="http", auth="none", csrf=False, methods=["GET", "POST"]
+    )
     def impersonate(self, redirect=None, **kw):
         if 'fleet_access_token' not in request.params:
             return Response("Missing param fleet_access_token", status=400)
@@ -15,9 +17,9 @@ class ImpersonateController(Home):
         
         ensure_db()
         request.params["login_success"] = False
-        conf_access_fleet_token = config.get('fleet_access_token', None)
-        param_access_fleet_token = request.params['fleet_access_token']
-        
+        conf_access_fleet_token = config.get("fleet_access_token", None)
+        param_access_fleet_token = request.params["fleet_access_token"]
+
         if conf_access_fleet_token != param_access_fleet_token:
             return Response("Wrong token", status=401)
             
@@ -29,7 +31,7 @@ class ImpersonateController(Home):
         )
 
         request.params["login_success"] = True
-        # Only usefull because Odoo verifies if the password is 'admin' to warn the user. 
+        # Only usefull because Odoo verifies if the password is 'admin' to warn the user.
         # It throws if no password is provided.
-        request.params["password"] = 'x' 
-        return local_redirect(super()._login_redirect(uid))
+        request.params["password"] = "x"
+        return request.redirect(super()._login_redirect(uid))

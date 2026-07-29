@@ -1,3 +1,4 @@
+import logging
 
 from odoo import _, http
 from odoo.http import request, Response
@@ -8,6 +9,7 @@ from odoo.addons.web.controllers.main import ensure_db, Home
 
 import logging
 _logger = logging.getLogger(__name__)
+
 
 class SoftRestartController(Home):
   @http.route("/restart", auth="none", type="http", csrf=False, methods=["POST"])
