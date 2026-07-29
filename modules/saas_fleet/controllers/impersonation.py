@@ -49,4 +49,4 @@ class ImpersonateController(Home):
         # Only usefull because Odoo verifies if the password is 'admin' to warn the user.
         # It throws if no password is provided.
         request.params["password"] = "x"
-        return request.redirect(super()._login_redirect(uid))
+        return http.redirect_with_hash(redirect or '/web')

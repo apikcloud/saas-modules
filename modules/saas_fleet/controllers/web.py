@@ -14,7 +14,7 @@ class HealthCheckFilter(logging.Filter):
     """Prevents health check requests from cluttering the Werkzeug logs."""
 
     def __init__(self, path, name=""):
-        super().__init__(name)
+        super(HealthCheckFilter, self).__init__(name)
         self.path = path
 
     def filter(self, record):
