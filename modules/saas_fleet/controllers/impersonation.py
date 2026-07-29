@@ -9,7 +9,9 @@ _logger = logging.getLogger(__name__)
 
 
 class ImpersonateController(Home):
-    @http.route("/impersonate", type="http", auth="none", csrf=False, methods=["GET", "POST"])
+    @http.route(
+        "/impersonate", type="http", auth="none", csrf=False, methods=["GET", "POST"]
+    )
     def impersonate(self, redirect=None, **kw):
         _logger.info("Impersonate")
         if 'fleet_access_token' not in request.params:
@@ -24,6 +26,10 @@ class ImpersonateController(Home):
         param_access_fleet_token = request.params['fleet_access_token']
         _logger.info(param_access_fleet_token)
         
+        request.params["login_success"] = False
+        conf_access_fleet_token = config.get("fleet_access_token", None)
+        param_access_fleet_token = request.params["fleet_access_token"]
+
         if conf_access_fleet_token != param_access_fleet_token:
             return Response("Wrong token", status=401)
             
@@ -39,4 +45,8 @@ class ImpersonateController(Home):
         
         request.env.registry.clear_caches()
 
-        return set_cookie_and_redirect('/web')
+        request.params["login_success"] = True
+        # Only usefull because Odoo verifies if the password is 'admin' to warn the user.
+        # It throws if no password is provided.
+        request.params["password"] = "x"
+        return request.redirect(super()._login_redirect(uid))
