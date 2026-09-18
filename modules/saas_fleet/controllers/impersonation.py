@@ -4,7 +4,7 @@ from odoo import http
 from odoo.addons.web.controllers.home import Home
 from odoo.addons.web.controllers.utils import ensure_db
 from odoo.http import request
-from odoo.service import security
+from odoo.http.session import update_session_token
 from odoo.tools import config
 
 
@@ -35,9 +35,7 @@ class ImpersonateController(Home):
         uid = request.session.uid = int(request.params["uid"])
 
         request.env.registry.clear_all_caches()
-        request.session.session_token = security.compute_session_token(
-            request.session, request.env
-        )
+        update_session_token(request.session, request.env)
 
         request.params["login_success"] = True
         # Only usefull because Odoo verifies if the password is 'admin' to warn the user.
