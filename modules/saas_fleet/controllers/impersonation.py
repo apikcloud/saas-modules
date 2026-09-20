@@ -34,7 +34,10 @@ class ImpersonateController(Home):
 
         uid = request.session.uid = int(request.params["uid"])
 
-        request.env.registry.clear_all_caches()
+        request.env.invalidate_all()
+        request.env.transaction.invalidate_access_cache()
+        request.env.transaction.invalidate_ormcache()
+        request.env.transaction.invalidate_ormcache('stable')
         update_session_token(request.session, request.env)
 
         request.params["login_success"] = True
